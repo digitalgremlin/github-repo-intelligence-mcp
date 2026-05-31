@@ -51,10 +51,21 @@ The subagent runs this, verifies (`npm run lint:types` + `npm test -- <module>`)
 
 ## Current state (verify against `git log` — authoritative)
 
-As of the last session: **Tasks 0–2 committed.** Resume at **Task 3 (pinned thresholds config, `src/config.ts`)** — pure data, no test, written directly by Claude Code.
+As of the last session: **Tasks 0–7 committed** (last commit `cd32244`). Resume at **Task 8 (`TtlLruCache`, `src/cache.ts` + `tests/cache.test.ts`)** — 🟣→🟢: write the failing test verbatim, confirm red, drive Codex for the impl (clock injected for determinism), then STOP for review. Full suite green at pause: **46/46 across 6 files**.
+
+The **pure-core layer is complete** (config → metrics → verdicts → health composition):
 - Task 0 — scaffold (`ts-mcp-empty`, lean deps, standalone tsconfig, minimal node:http Standby stub in `main.ts`, actor.json categories `AI_GPT_AND_LLMS`/`DEVELOPER_TOOLS` + MCP tags).
 - Task 1 — `src/types.ts` (shared types).
-- Task 2 — `src/repo.ts` + `tests/repo.test.ts` (repo parser; implemented by Codex).
+- Task 2 — `src/repo.ts` + `tests/repo.test.ts` (repo parser; Codex).
+- Task 3 — `src/config.ts` (`DEFAULTS` + `THRESHOLDS`; pure data, Claude Code).
+- Task 4 — `src/metrics.ts` `median` + `momentumTrend` (Codex).
+- Task 5 — `src/metrics.ts` dimension computers `activityMetrics`/`issueMetrics`/`prMetrics`/`contributorMetrics` (Codex).
+- Task 6 — `src/verdicts.ts` dimension verdicts (Codex; used the plan's Step-5 corrected `contributorVerdict` — solo maintainer caps at Moderate, not At-Risk).
+- Task 7 — `src/health.ts` `composeOverall` + `rationale` (Codex).
+
+**Codex headless gotcha (cost ~30 min this session):** `codex exec` blocks forever on non-TTY stdin (`Reading additional input from stdin...`). ALWAYS invoke with `< /dev/null`. Run with `RUST_LOG=info` teed to a log for visibility. Do NOT bake a `pkill -f "codex…"` cleanup into the same command line that launches codex — the pattern self-matches and kills the new run. See project memory `feedback_codex_headless_stdin.md`.
+
+Next after Task 8: **Task 9** begins the I/O shell (GitHub client, GraphQL+REST) and is where the **MCP SDK runtime dep is confirmed/added** — ask before installing.
 
 Progress is tracked by the plan's `- [ ]` checkboxes and `git log`. `src/main.ts` is a placeholder stub until **Task 14** (full MCP server bootstrap).
 
