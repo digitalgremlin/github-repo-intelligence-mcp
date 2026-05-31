@@ -1,0 +1,26 @@
+{
+    "name": "github-repo-intelligence-mcp",
+    "version": "0.1.0",
+    "type": "module",
+    "description": "Standby MCP server returning opinionated GitHub repository health verdicts backed by transparent metrics.",
+    "license": "ISC",
+    "engines": {
+        "node": ">=20.0.0"
+    },
+    "dependencies": {
+        "apify": "^3.7.0"
+    },
+    "devDependencies": {
+        "@types/node": "^24.0.0",
+        "typescript": "^5.9.3",
+        "tsx": "^4.20.3",
+        "vitest": "^4.1.0"
+    },
+    "scripts": {
+        "start": "tsx src/main.ts",
+        "start:prod": "node dist/main.js",
+        "build": "tsc",
+        "test": "vitest run",
+        "lint:types": "tsc --noEmit"
+    }
+}

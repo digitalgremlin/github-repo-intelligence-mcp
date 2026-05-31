@@ -1,0 +1,26 @@
+{
+	"$schema": "https://apify.com/schemas/v1/actor.ide.json",
+	"actorSpecification": 1,
+	"name": "github-repo-intelligence-mcp",
+	"title": "GitHub Repo Intelligence MCP",
+	"description": "Persistent MCP server that gives AI assistants an opinionated health read on any GitHub repository — actively maintained, slowing, at-risk, or likely abandoned — backed by transparent, inspectable metrics.",
+	"version": "0.1",
+	"buildTag": "latest",
+	"usesStandbyMode": true,
+	"meta": {
+		"templateId": "ts-mcp-empty",
+		"generatedBy": "Claude Code with Claude Opus 4.7"
+	},
+	"input": {
+		"title": "GitHub Repo Intelligence MCP input",
+		"description": "Optional Standby configuration. All fields are optional so the Actor boots with no input.",
+		"type": "object",
+		"schemaVersion": 1,
+		"properties": {},
+		"required": []
+	},
+	"dockerfile": "../Dockerfile",
+	"webServerMcpPath": "/mcp",
+	"categories": ["AI_GPT_AND_LLMS", "DEVELOPER_TOOLS"],
+	"tags": ["standby", "mcp", "mcp-server", "model-context-protocol", "github", "developer-tools", "ai-agent"]
+}
