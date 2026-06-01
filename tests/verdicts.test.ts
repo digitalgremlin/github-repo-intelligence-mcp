@@ -47,12 +47,12 @@ describe("prVerdict", () => {
 
 describe("contributorVerdict", () => {
   it("Healthy with 3+ active and no bus-factor", () => {
-    expect(contributorVerdict({ activeContributors90d: 5, busFactorFlag: false } as any)).toBe("Healthy");
+    expect(contributorVerdict({ totalContributors: 5, busFactorFlag: false } as any)).toBe("Healthy");
   });
   it("solo active maintainer caps at Moderate", () => {
-    expect(contributorVerdict({ activeContributors90d: 1, busFactorFlag: true } as any)).toBe("Moderate");
+    expect(contributorVerdict({ totalContributors: 1, busFactorFlag: true } as any)).toBe("Moderate");
   });
   it("At-Risk when no active contributors", () => {
-    expect(contributorVerdict({ activeContributors90d: 0, busFactorFlag: true } as any)).toBe("At-Risk");
+    expect(contributorVerdict({ totalContributors: 0, busFactorFlag: true } as any)).toBe("At-Risk");
   });
 });

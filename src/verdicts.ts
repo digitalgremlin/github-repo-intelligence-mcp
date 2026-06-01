@@ -37,11 +37,11 @@ export function prVerdict(m: Pick<PrMetrics, 'mergeRate' | 'oldestOpenPrDaysAgo'
 }
 
 export function contributorVerdict(
-  m: Pick<ContributorMetrics, 'activeContributors90d' | 'busFactorFlag'>,
+  m: Pick<ContributorMetrics, 'totalContributors' | 'busFactorFlag'>,
 ): DimensionVerdict {
   const t = THRESHOLDS.contributors;
 
-  if (m.activeContributors90d === 0) return 'At-Risk';
-  if (m.activeContributors90d >= t.healthyMinActive && !m.busFactorFlag) return 'Healthy';
+  if (m.totalContributors === 0) return 'At-Risk';
+  if (m.totalContributors >= t.healthyMinActive && !m.busFactorFlag) return 'Healthy';
   return 'Moderate';
 }

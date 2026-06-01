@@ -66,17 +66,16 @@ describe("prMetrics", () => {
 });
 
 describe("contributorMetrics", () => {
-  it("computes shares, bus-factor flag, and new contributors", () => {
+  it("computes total contributors, shares, and bus-factor flag", () => {
     const p = { ...base, contributors: [
       { login: "a", commits: 60, firstCommitAt: daysAgo(400) },
       { login: "b", commits: 30, firstCommitAt: daysAgo(10) },
       { login: "c", commits: 10, firstCommitAt: daysAgo(5) },
     ]};
     const m = contributorMetrics(p, NOW);
-    expect(m.activeContributors90d).toBe(3);
+    expect(m.totalContributors).toBe(3);
     expect(m.topContributorShare).toBeCloseTo(0.6);
     expect(m.topTwoContributorShare).toBeCloseTo(0.9);
     expect(m.busFactorFlag).toBe(true);       // 0.6 > 0.50
-    expect(m.newContributors90d).toBe(2);      // b and c within 90d
   });
 });

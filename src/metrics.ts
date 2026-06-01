@@ -116,11 +116,10 @@ export function prMetrics(p: RawRepoPayload, now: Date): PrMetrics {
 }
 
 export interface ContributorMetrics {
-  activeContributors90d: number;
+  totalContributors: number;
   topContributorShare: number;
   topTwoContributorShare: number;
   busFactorFlag: boolean;
-  newContributors90d: number;
 }
 
 export function contributorMetrics(p: RawRepoPayload, now: Date): ContributorMetrics {
@@ -133,10 +132,9 @@ export function contributorMetrics(p: RawRepoPayload, now: Date): ContributorMet
   const { busFactorTopShare, busFactorTopTwoShare } = THRESHOLDS.contributors;
 
   return {
-    activeContributors90d: sorted.length,
+    totalContributors: sorted.length,
     topContributorShare: topShare,
     topTwoContributorShare: topTwoShare,
     busFactorFlag: topShare > busFactorTopShare || topTwoShare > busFactorTopTwoShare,
-    newContributors90d: sorted.filter((contributor) => within(contributor.firstCommitAt, now, 90)).length,
   };
 }

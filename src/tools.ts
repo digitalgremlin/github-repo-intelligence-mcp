@@ -41,7 +41,7 @@ export function buildRepoHealth(p: RawRepoPayload, now: Date, authenticated: boo
       activity: { verdict: verdicts.activity, lastCommitDaysAgo: a.lastCommitDaysAgo, commits90d: a.commits90d },
       issues: { verdict: verdicts.issues, medianFirstResponseDays: i.medianFirstResponseDays, staleOpenRatio: i.staleOpenRatio },
       pullRequests: { verdict: verdicts.pulls, mergeRate: pr.mergeRate, oldestOpenPrDaysAgo: pr.oldestOpenPrDaysAgo },
-      contributors: { verdict: verdicts.contributors, activeContributors90d: c.activeContributors90d, busFactorFlag: c.busFactorFlag },
+      contributors: { verdict: verdicts.contributors, totalContributors: c.totalContributors, busFactorFlag: c.busFactorFlag },
     },
     rationale: rationale(verdicts),
     stars: p.stars, forks: p.forks,
