@@ -38,6 +38,8 @@ codex exec --cd <actor-dir> --sandbox workspace-write "<bounded prompt>"
 ```
 The subagent runs this, verifies (`npm run lint:types` + `npm test -- <module>`), reports the file + `git status` WITHOUT committing. Claude Code reviews and commits. **Do not hand-write Tier-2 impl** — preserve the tier split. Pure-data / types-only tasks (no test) are written directly by Claude Code.
 
+**Codex scope guard (NON-NEGOTIABLE):** Every Codex prompt MUST include an explicit "Do NOT modify `.actor/actor.json` or any file other than `<target files>`" instruction. Left unguarded, Codex follows the AGENTS.md `generatedBy` directive and rewrites `.actor/actor.json` → `meta.generatedBy` (flips it to "Codex with GPT-5") on unrelated tasks. These projects are Claude-Code-orchestrated, so `generatedBy` must stay "Claude Code …" and never churn per-task. After every Codex run, `git status --short` and revert any stray edits before committing — stage only the intended files. (Caught on Task 9; see project memory `feedback_codex_generatedby_guard.md`.)
+
 ## Standing rules (NON-NEGOTIABLE)
 
 - **PAUSE after every task** for Joe's manual review — not just 🔵 gates. Do not roll into the next task.
