@@ -76,6 +76,10 @@ Progress is tracked by the plan's `- [ ]` checkboxes and `git log`. `src/main.ts
 - Dockerfile builder + final stages run `RUN npm ls @crawlee/core apify puppeteer playwright`; `puppeteer`/`playwright` are not deps and may not be on the base image — could fail a real `docker build` (not exercised by local `npm run build`). Decide whether to trim that line.
 - Task 14's MCP handler must validate the `repo` arg type at the boundary (spec §6) — `parseRepo` is typed `(input: string)` and has no runtime non-string guard.
 
+## Test fixtures (regenerating)
+
+`tests/fixtures/{active,slowing,abandoned}.json` are real captured `RawRepoPayload`s (honojs/hono, chalk/chalk, request/request) with `NOW` pinned to 2026-06-01. No capture tool ships — to regenerate: fetch a repo payload via `fetchRepoPayload`, then source contributors from the GitHub REST `/repos/{owner}/{name}/contributors` list endpoint (NOT `/stats/contributors`, which returns 202 on a cold cache and rarely warms — that was Bug A). Map each to `{login, commits: contributions, firstCommitAt}` and trim nodes to <100. Keep `NOW` aligned to the capture date if real commit dates shift a verdict.
+
 ## Commands
 
 ```bash
