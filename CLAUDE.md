@@ -54,7 +54,7 @@ The subagent runs this, verifies (`npm run lint:types` + `npm test -- <module>`)
 
 ## Current state (verify against `git log` — authoritative)
 
-As of the last session: **Tasks 0–12 committed + a pre-deploy hardening pass** (last commit `d81bb4d`). Resume at **Task 13 (Documentation — README + SEO listing fields, 🟣→🔵)**. Full suite green at pause: **63/63 across 10 files**; `npm audit` = **0 vulnerabilities**. Working tree clean.
+As of the last session: **Tasks 0–13 committed + a pre-deploy hardening pass** (last commit `00b59d0`). Resume at **Task 14 (Deploy — all 🔵 Joe gates: `git push`, `apify push`, enable Standby LAST)**. Full suite green at last test run: **63/63 across 10 files**; `npm audit` = **0 vulnerabilities**. Working tree clean.
 
 The full **pure-core + I/O-shell + Standby server** is built and wired end to end:
 - Tasks 0–7 (pure core) — scaffold, `types.ts`, `repo.ts`, `config.ts` (`DEFAULTS`/`THRESHOLDS`), `metrics.ts` (`median`/`momentumTrend` + dimension computers), `verdicts.ts` (solo maintainer caps at Moderate), `health.ts` (`composeOverall`/`rationale`).
@@ -63,6 +63,7 @@ The full **pure-core + I/O-shell + Standby server** is built and wired end to en
 - Task 10 — `src/tools.ts` pure builders (`buildRepoHealth` + 4 dimension builders).
 - Task 11 — `src/main.ts` Standby MCP server (node:http; readiness probe; stateless `StreamableHTTPServerTransport` per request; 5 tools). **MCP SDK dep added** (`@modelcontextprotocol/sdk@^1.29.0`, `zod@^4.4.3`). `.actor/actor.json` input props populated. `main.ts` is now the real bootstrap, NOT a stub.
 - Task 12 — `tests/fixtures/{active,slowing,abandoned}.json` (real payloads: honojs/hono, chalk/chalk, request/request; `NOW` pinned 2026-06-01) + `tests/integration.test.ts`. Scratch capture tool was removed; regen recipe is in the "Test fixtures" section below.
+- Task 13 (`00b59d0`) — product `README.md` (what it does, 5 tools with verified example I/O, verdict thresholds table + overall composition, token setup, `totalContributors` all-time-proxy note, "Works well with" cross-links). SEO title/description/categories are set in the Apify Console at publish (NOT committed to `actor.json`); drafted strings live in the session log, not the repo.
 
 **Pre-deploy hardening pass (after Task 12, all committed):** three real production bugs found during fixture capture + the npm audit, all fixed TDD/tier-split:
 - **Bug A** (`6c8468a`) — contributors now sourced from the REST `/contributors` list endpoint, NOT `/stats/contributors` (which returns 202 on a cold cache and rarely warms → empty contributors in prod).
@@ -72,7 +73,7 @@ The full **pure-core + I/O-shell + Standby server** is built and wired end to en
 
 **Codex headless gotchas (learned the hard way):** `codex exec` blocks forever on non-TTY stdin — ALWAYS invoke with `< /dev/null`, `RUST_LOG=info` teed to a log; never bake a self-matching `pkill -f "codex…"` into the launch line (`feedback_codex_headless_stdin.md`). When driving Codex via a subagent against a red test, do NOT tell the subagent to "revert all but the impl file" — it wipes the intentional uncommitted red test; whitelist the test or have it report-without-reverting (`feedback_codex_subagent_revert_test.md`).
 
-Next: **Task 13** (README/SEO, this is mostly 🟣 writing + 🔵 editorial), then **Task 14** (deploy: `apify push`, then enable Standby LAST — every push disables it). Progress tracked by the plan's `- [ ]` checkboxes and `git log`.
+Next: **Task 14** (deploy, all 🔵 Joe gates: `git push` → `apify push` → verify build + 0 vulns + README renders → enable Standby LAST, every push disables it → smoke-test `get_repo_health` → failure alert (no run-duration alert) → publish + set Console SEO fields). Progress tracked by the plan's `- [ ]` checkboxes and `git log`.
 
 ## Open items to resolve before first `apify push`
 
