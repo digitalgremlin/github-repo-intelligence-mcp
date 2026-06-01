@@ -54,23 +54,25 @@ The subagent runs this, verifies (`npm run lint:types` + `npm test -- <module>`)
 
 ## Current state (verify against `git log` — authoritative)
 
-As of the last session: **Tasks 0–7 committed** (last commit `cd32244`). Resume at **Task 8 (`TtlLruCache`, `src/cache.ts` + `tests/cache.test.ts`)** — 🟣→🟢: write the failing test verbatim, confirm red, drive Codex for the impl (clock injected for determinism), then STOP for review. Full suite green at pause: **46/46 across 6 files**.
+As of the last session: **Tasks 0–12 committed + a pre-deploy hardening pass** (last commit `d81bb4d`). Resume at **Task 13 (Documentation — README + SEO listing fields, 🟣→🔵)**. Full suite green at pause: **63/63 across 10 files**; `npm audit` = **0 vulnerabilities**. Working tree clean.
 
-The **pure-core layer is complete** (config → metrics → verdicts → health composition):
-- Task 0 — scaffold (`ts-mcp-empty`, lean deps, standalone tsconfig, minimal node:http Standby stub in `main.ts`, actor.json categories `AI_GPT_AND_LLMS`/`DEVELOPER_TOOLS` + MCP tags).
-- Task 1 — `src/types.ts` (shared types).
-- Task 2 — `src/repo.ts` + `tests/repo.test.ts` (repo parser; Codex).
-- Task 3 — `src/config.ts` (`DEFAULTS` + `THRESHOLDS`; pure data, Claude Code).
-- Task 4 — `src/metrics.ts` `median` + `momentumTrend` (Codex).
-- Task 5 — `src/metrics.ts` dimension computers `activityMetrics`/`issueMetrics`/`prMetrics`/`contributorMetrics` (Codex).
-- Task 6 — `src/verdicts.ts` dimension verdicts (Codex; used the plan's Step-5 corrected `contributorVerdict` — solo maintainer caps at Moderate, not At-Risk).
-- Task 7 — `src/health.ts` `composeOverall` + `rationale` (Codex).
+The full **pure-core + I/O-shell + Standby server** is built and wired end to end:
+- Tasks 0–7 (pure core) — scaffold, `types.ts`, `repo.ts`, `config.ts` (`DEFAULTS`/`THRESHOLDS`), `metrics.ts` (`median`/`momentumTrend` + dimension computers), `verdicts.ts` (solo maintainer caps at Moderate), `health.ts` (`composeOverall`/`rationale`).
+- Task 8 — `src/cache.ts` `TtlLruCache` (clock-injected) + tests.
+- Task 9 — `src/github/queries.ts` + `src/github/client.ts` `fetchRepoPayload` (GraphQL primary + REST contributors; `GithubError` NOT_FOUND/RATE_LIMITED/UPSTREAM; `fetchFn` injected).
+- Task 10 — `src/tools.ts` pure builders (`buildRepoHealth` + 4 dimension builders).
+- Task 11 — `src/main.ts` Standby MCP server (node:http; readiness probe; stateless `StreamableHTTPServerTransport` per request; 5 tools). **MCP SDK dep added** (`@modelcontextprotocol/sdk@^1.29.0`, `zod@^4.4.3`). `.actor/actor.json` input props populated. `main.ts` is now the real bootstrap, NOT a stub.
+- Task 12 — `tests/fixtures/{active,slowing,abandoned}.json` (real payloads: honojs/hono, chalk/chalk, request/request; `NOW` pinned 2026-06-01) + `tests/integration.test.ts`. Scratch capture tool was removed; regen recipe is in the "Test fixtures" section below.
 
-**Codex headless gotcha (cost ~30 min this session):** `codex exec` blocks forever on non-TTY stdin (`Reading additional input from stdin...`). ALWAYS invoke with `< /dev/null`. Run with `RUST_LOG=info` teed to a log for visibility. Do NOT bake a `pkill -f "codex…"` cleanup into the same command line that launches codex — the pattern self-matches and kills the new run. See project memory `feedback_codex_headless_stdin.md`.
+**Pre-deploy hardening pass (after Task 12, all committed):** three real production bugs found during fixture capture + the npm audit, all fixed TDD/tier-split:
+- **Bug A** (`6c8468a`) — contributors now sourced from the REST `/contributors` list endpoint, NOT `/stats/contributors` (which returns 202 on a cold cache and rarely warms → empty contributors in prod).
+- **Bug C** (`ee6ada9`) — commit history fetched over `max(windowDays, 365)` days so the activity Moderate/At-Risk bands are reachable (was using the 90d analysis window).
+- **Bug B** (`b66164b`) — renamed `activeContributors90d`→`totalContributors` (it was a raw count, never 90d-active); dropped `newContributors90d` (unfeedable after Bug A). Verdict thresholds unchanged.
+- **Vulns** (`d81bb4d`) — `overrides.file-type ^21.3.2` clears 3 moderate transitive advisories → 0 vulns (see Lean-deps rule for the re-check-on-bump caveat).
 
-Next after Task 8: **Task 9** begins the I/O shell (GitHub client, GraphQL+REST) and is where the **MCP SDK runtime dep is confirmed/added** — ask before installing.
+**Codex headless gotchas (learned the hard way):** `codex exec` blocks forever on non-TTY stdin — ALWAYS invoke with `< /dev/null`, `RUST_LOG=info` teed to a log; never bake a self-matching `pkill -f "codex…"` into the launch line (`feedback_codex_headless_stdin.md`). When driving Codex via a subagent against a red test, do NOT tell the subagent to "revert all but the impl file" — it wipes the intentional uncommitted red test; whitelist the test or have it report-without-reverting (`feedback_codex_subagent_revert_test.md`).
 
-Progress is tracked by the plan's `- [ ]` checkboxes and `git log`. `src/main.ts` is a placeholder stub until **Task 14** (full MCP server bootstrap).
+Next: **Task 13** (README/SEO, this is mostly 🟣 writing + 🔵 editorial), then **Task 14** (deploy: `apify push`, then enable Standby LAST — every push disables it). Progress tracked by the plan's `- [ ]` checkboxes and `git log`.
 
 ## Open items to resolve before first `apify push`
 
