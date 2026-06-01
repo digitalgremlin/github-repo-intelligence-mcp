@@ -48,6 +48,7 @@ The subagent runs this, verifies (`npm run lint:types` + `npm test -- <module>`)
 - **Standby is enabled LAST**, after the final push (every `apify push` disables it).
 - **Determinism is sacred** — no randomness, no time-based behavior, no network in tests; clocks/`now` injected into pure modules.
 - **Lean deps:** `apify` is the only runtime dep until Task 9 (the exact MCP SDK package is confirmed/added there). Dev: `tsx`, `typescript`, `vitest`, `@types/node`. Node >=20.
+- **`overrides.file-type` `^21.3.2` (in package.json):** forces the transitive `file-type` past `@crawlee/utils`'s declared `^20.0.0` to clear 3 moderate advisories (ASF infinite-loop + ZIP decompression-bomb DoS) that `npm audit fix` could not resolve in-range. Safe here — the actor never exercises crawlee's `file-type` path (no crawling; GitHub JSON only) — and the full suite + Standby boot pass on `file-type@21.3.x`. **Re-check this override whenever `apify`/crawlee is bumped:** if upstream moves to a patched `file-type`, drop the override.
 - **Multi-stage Dockerfile** on `apify/actor-node:24` with a builder stage running `npm run build` (Changelog Triage `tsc not found` lesson — do not collapse to single-stage `--omit=dev`). Dockerfile changes: ask first.
 - **`input_schema.json` must include `prefill`** for any field used in QA (SERP Topic Gap Monitor "Under Maintenance" lesson).
 

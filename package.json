@@ -24,5 +24,8 @@
         "build": "tsc",
         "test": "vitest run",
         "lint:types": "tsc --noEmit"
+    },
+    "overrides": {
+        "file-type": "^21.3.2"
     }
 }
