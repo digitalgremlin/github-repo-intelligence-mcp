@@ -10,8 +10,9 @@ const graphqlOk = {
     issues: { nodes: [] }, pullRequests: { nodes: [] },
   } } };
 
-function fakeFetch(graphqlBody: unknown, restContributors: unknown) {
+function fakeFetch(graphqlBody: unknown, restContributors: unknown, calls?: string[]) {
   return async (url: string): Promise<any> => {
+    calls?.push(url);
     if (url.includes("/graphql")) return { ok: true, status: 200, json: async () => graphqlBody };
     return { ok: true, status: 200, json: async () => restContributors };
   };
@@ -20,10 +21,31 @@ function fakeFetch(graphqlBody: unknown, restContributors: unknown) {
 describe("fetchRepoPayload", () => {
   it("assembles a payload from GraphQL + REST", async () => {
     const p = await fetchRepoPayload({ owner: "o", name: "n" }, null, 90,
-      fakeFetch(graphqlOk, [{ author: { login: "a" }, total: 50, weeks: [] }]) as any);
+      fakeFetch(graphqlOk, [{ login: "a", contributions: 50 }]) as any);
     expect(p.stars).toBe(100);
     expect(p.commitDates).toContain("2026-05-30T00:00:00Z");
     expect(p.contributors[0].login).toBe("a");
+    expect(p.contributors[0].commits).toBe(50);
+  });
+
+  it("sources contributors from the /contributors list endpoint, not /stats", async () => {
+    const calls: string[] = [];
+    const p = await fetchRepoPayload({ owner: "o", name: "n" }, null, 90,
+      fakeFetch(graphqlOk, [{ login: "a", contributions: 50 }, { login: "b", contributions: 20 }], calls) as any);
+    const restCall = calls.find((u) => !u.includes("/graphql"))!;
+    expect(restCall).toContain("/repos/o/n/contributors");
+    expect(restCall).not.toContain("/stats/");
+    expect(p.contributors).toHaveLength(2);
+    expect(p.contributors[1]).toMatchObject({ login: "b", commits: 20 });
+  });
+
+  it("returns an empty contributor list when the REST call fails", async () => {
+    const f = async (url: string): Promise<any> =>
+      url.includes("/graphql")
+        ? { ok: true, status: 200, json: async () => graphqlOk }
+        : { ok: false, status: 404, json: async () => ({}) };
+    const p = await fetchRepoPayload({ owner: "o", name: "n" }, null, 90, f as any);
+    expect(p.contributors).toEqual([]);
   });
 
   it("throws NOT_FOUND when GraphQL returns a null repository", async () => {

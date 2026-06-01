@@ -57,17 +57,13 @@ export async function fetchRepoPayload(
 
 async function fetchContributors(repo: RepoRef, headers: Record<string, string>, fetchFn: FetchFn): Promise<ContributorRecord[]> {
   const res = await fetchFn(
-    `https://api.github.com/repos/${repo.owner}/${repo.name}/stats/contributors`, { headers });
+    `https://api.github.com/repos/${repo.owner}/${repo.name}/contributors?per_page=100`, { headers });
   if (!res.ok) return [];
   const data = await res.json();
   if (!Array.isArray(data)) return [];
-  return data.map((c: any) => {
-    const weeks = c.weeks ?? [];
-    const firstActive = weeks.find((w: any) => (w.c ?? 0) > 0);
-    return {
-      login: c.author?.login ?? "unknown",
-      commits: c.total ?? 0,
-      firstCommitAt: firstActive ? new Date(firstActive.w * 1000).toISOString() : new Date(0).toISOString(),
-    };
-  });
+  return data.map((c: any) => ({
+    login: c.login ?? "unknown",
+    commits: c.contributions ?? 0,
+    firstCommitAt: new Date(0).toISOString(),
+  }));
 }
