@@ -16,7 +16,34 @@
 		"description": "Optional Standby configuration. All fields are optional so the Actor boots with no input.",
 		"type": "object",
 		"schemaVersion": 1,
-		"properties": {},
+		"properties": {
+			"githubToken": {
+				"title": "GitHub token (optional)",
+				"type": "string",
+				"editor": "textfield",
+				"isSecret": true,
+				"description": "Personal access token or fine-grained token. Raises the GitHub API rate limit to 5,000 requests/hour and enables analysis of private repositories. Leave blank to use the lower unauthenticated rate limit on public repos.",
+				"prefill": ""
+			},
+			"cacheTtlMinutes": {
+				"title": "Cache TTL (minutes)",
+				"type": "integer",
+				"description": "How long a repository's fetched data is reused before refetching. Lower values give fresher reads; higher values reduce API calls.",
+				"default": 20,
+				"prefill": 20,
+				"minimum": 1,
+				"maximum": 240
+			},
+			"analysisWindowDays": {
+				"title": "Analysis window (days)",
+				"type": "integer",
+				"description": "Trailing window over which issue and PR activity is measured.",
+				"default": 90,
+				"prefill": 90,
+				"minimum": 30,
+				"maximum": 365
+			}
+		},
 		"required": []
 	},
 	"dockerfile": "../Dockerfile",
