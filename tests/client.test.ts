@@ -39,6 +39,20 @@ describe("fetchRepoPayload", () => {
     expect(p.contributors[1]).toMatchObject({ login: "b", commits: 20 });
   });
 
+  it("fetches commit history over at least 365 days even with a short analysis window", async () => {
+    let gqlBody: any;
+    const f = async (url: string, init?: any): Promise<any> => {
+      if (url.includes("/graphql")) {
+        gqlBody = JSON.parse(init.body);
+        return { ok: true, status: 200, json: async () => graphqlOk };
+      }
+      return { ok: true, status: 200, json: async () => [] };
+    };
+    await fetchRepoPayload({ owner: "o", name: "n" }, null, 90, f as any);
+    const sinceDaysAgo = (Date.now() - new Date(gqlBody.variables.since).getTime()) / 86400000;
+    expect(sinceDaysAgo).toBeGreaterThanOrEqual(365);
+  });
+
   it("returns an empty contributor list when the REST call fails", async () => {
     const f = async (url: string): Promise<any> =>
       url.includes("/graphql")

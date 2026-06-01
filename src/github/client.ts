@@ -16,7 +16,7 @@ type FetchFn = (url: string, init?: any) => Promise<{
 export async function fetchRepoPayload(
   repo: RepoRef, token: string | null, windowDays: number, fetchFn: FetchFn = fetch as any,
 ): Promise<RawRepoPayload> {
-  const sinceISO = new Date(Date.now() - windowDays * 86400000).toISOString();
+  const sinceISO = new Date(Date.now() - Math.max(windowDays, 365) * 86400000).toISOString();
   const headers: Record<string, string> = { "Content-Type": "application/json", "User-Agent": "repo-intel-mcp" };
   if (token) headers.Authorization = `Bearer ${token}`;
 
