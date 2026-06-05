@@ -18,11 +18,11 @@
 		"schemaVersion": 1,
 		"properties": {
 			"githubToken": {
-				"title": "GitHub token (optional)",
+				"title": "GitHub token (required in practice)",
 				"type": "string",
 				"editor": "textfield",
 				"isSecret": true,
-				"description": "Personal access token or fine-grained token. Raises the GitHub API rate limit to 5,000 requests/hour and enables analysis of private repositories. Leave blank to use the lower unauthenticated rate limit on public repos.",
+				"description": "Read-only personal access or fine-grained token. The Actor's GraphQL data source rejects unauthenticated requests, and on Apify's shared IPs the anonymous quota is exhausted almost immediately — without a token the Actor returns rate-limit errors. A token also enables private-repo analysis. Tip: a classic token with no scopes is enough for public repos. You can instead set a GITHUB_TOKEN environment variable on the Actor.",
 				"prefill": ""
 			},
 			"cacheTtlMinutes": {
