@@ -3,7 +3,7 @@
 	"actorSpecification": 1,
 	"name": "github-repo-intelligence-mcp",
 	"title": "GitHub Repo Intelligence MCP",
-	"description": "Persistent MCP server that gives AI assistants an opinionated health read on any GitHub repository — actively maintained, slowing, at-risk, or likely abandoned — backed by transparent, inspectable metrics.",
+	"description": "MCP server that answers 'is this repo still maintained?' — returns one of four verdict labels (Actively maintained, Slowing, At-risk, Likely abandoned) with the transparent metrics behind every call. Runs as a Standby Actor so it's always warm.",
 	"version": "0.1",
 	"buildTag": "latest",
 	"usesStandbyMode": true,
@@ -13,7 +13,7 @@
 	},
 	"input": {
 		"title": "GitHub Repo Intelligence MCP input",
-		"description": "Optional Standby configuration. All fields are optional so the Actor boots with no input.",
+		"description": "Optional Standby configuration. All fields are optional so the Actor boots with no input — but a GitHub token is effectively required to get verdicts rather than rate-limit errors.",
 		"type": "object",
 		"schemaVersion": 1,
 		"properties": {
@@ -22,13 +22,13 @@
 				"type": "string",
 				"editor": "textfield",
 				"isSecret": true,
-				"description": "Read-only personal access or fine-grained token. The Actor's GraphQL data source rejects unauthenticated requests, and on Apify's shared IPs the anonymous quota is exhausted almost immediately — without a token the Actor returns rate-limit errors. A token also enables private-repo analysis. Tip: a classic token with no scopes is enough for public repos. You can instead set a GITHUB_TOKEN environment variable on the Actor.",
+				"description": "Read-only personal access or fine-grained token. GitHub's GraphQL API (the Actor's primary data source) rejects unauthenticated requests; Apify's shared IPs exhaust the anonymous REST quota (~60 req/hr) almost immediately. Without a token, the Actor returns rate-limit errors rather than verdicts. A classic token with no scopes works for public repos; a fine-grained token works for private repos. Recommended for Standby: set a GITHUB_TOKEN environment variable on the Actor so it persists across restarts.",
 				"prefill": ""
 			},
 			"cacheTtlMinutes": {
 				"title": "Cache TTL (minutes)",
 				"type": "integer",
-				"description": "How long a repository's fetched data is reused before refetching. Lower values give fresher reads; higher values reduce API calls.",
+				"description": "How long a repository's fetched GitHub payload is reused before refetching. Lower = fresher reads; higher = fewer GitHub API calls. All five tools share the same cached payload per repo.",
 				"default": 20,
 				"prefill": 20,
 				"minimum": 1,
@@ -37,7 +37,7 @@
 			"analysisWindowDays": {
 				"title": "Analysis window (days)",
 				"type": "integer",
-				"description": "Trailing window over which issue and PR activity is measured.",
+				"description": "Trailing window (30–365 days) over which issue and PR activity is measured. Shorter windows surface recent trajectory; longer windows reflect a steadier baseline.",
 				"default": 90,
 				"prefill": 90,
 				"minimum": 30,
