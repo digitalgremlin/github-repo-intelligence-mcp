@@ -54,7 +54,7 @@ The subagent runs this, verifies (`npm run lint:types` + `npm test -- <module>`)
 
 ## Current state (verify against `git log` — authoritative)
 
-As of the last session: **Tasks 0–13 committed + a pre-deploy hardening pass** (last commit `00b59d0`). Resume at **Task 14 (Deploy — all 🔵 Joe gates: `git push`, `apify push`, enable Standby LAST)**. Full suite green at last test run: **63/63 across 10 files**; `npm audit` = **0 vulnerabilities**. Working tree clean.
+As of the last session: **Tasks 0–13 committed + a pre-deploy hardening pass + both pre-push open items resolved** (last commit `84745ce`). Resume at **Task 14 (Deploy — all 🔵 Joe gates: `git push`, `apify push`, enable Standby LAST)**. Full suite green at last test run: **64/64 across 10 files**; `npm audit` = **0 vulnerabilities**. Working tree clean. The "Open items to resolve before first `apify push`" section is now empty (both cleared — see that section).
 
 The full **pure-core + I/O-shell + Standby server** is built and wired end to end:
 - Tasks 0–7 (pure core) — scaffold, `types.ts`, `repo.ts`, `config.ts` (`DEFAULTS`/`THRESHOLDS`), `metrics.ts` (`median`/`momentumTrend` + dimension computers), `verdicts.ts` (solo maintainer caps at Moderate), `health.ts` (`composeOverall`/`rationale`).
@@ -77,8 +77,12 @@ Next: **Task 14** (deploy, all 🔵 Joe gates: `git push` → `apify push` → v
 
 ## Open items to resolve before first `apify push`
 
-- Dockerfile builder + final stages run `RUN npm ls @crawlee/core apify puppeteer playwright`; `puppeteer`/`playwright` are not deps and may not be on the base image — could fail a real `docker build` (not exercised by local `npm run build`). Decide whether to trim that line.
-- Task 14's MCP handler must validate the `repo` arg type at the boundary (spec §6) — `parseRepo` is typed `(input: string)` and has no runtime non-string guard.
+Both pre-push open items are now **RESOLVED** (committed `9b55e8a`, `84745ce`):
+
+- ✅ **Dockerfile `npm ls` diagnostic** (`84745ce`) — both `RUN npm ls @crawlee/core apify puppeteer playwright` lines trimmed to `RUN npm ls @crawlee/core apify || true`. `puppeteer`/`playwright` (not deps, absent from `apify/actor-node:24`) made `npm ls` exit non-zero → a real `docker build` would fail on that `RUN`. `|| true` makes the diagnostic non-fatal (matches the existing final-stage `npm list … || true` pattern).
+- ✅ **`repo` arg boundary guard** (`9b55e8a`) — `parseRepo` now starts with `if (typeof input !== "string") return null;`, making it total so a stray non-string returns a clean "Invalid repo argument" error instead of throwing on `.trim()` and crashing the handler (spec §6). The MCP layer's `z.string()` already validates upstream; this is defense-in-depth. Covered by a new red→green test in `tests/repo.test.ts`.
+
+No open items remain before `apify push`.
 
 ## Test fixtures (regenerating)
 
