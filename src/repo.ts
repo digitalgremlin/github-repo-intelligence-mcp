@@ -4,6 +4,8 @@ export interface RepoRef {
 }
 
 export function parseRepo(input: string): RepoRef | null {
+    if (typeof input !== "string") return null;
+
     const normalized = input
         .trim()
         .replace(/^https?:\/\//i, "")

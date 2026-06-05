@@ -20,4 +20,12 @@ describe("parseRepo", () => {
   it("rejects an empty string", () => {
     expect(parseRepo("")).toBeNull();
   });
+  it("rejects non-string input without throwing", () => {
+    // The MCP boundary passes a zod-validated string, but parseRepo must be
+    // total so a stray non-string never crashes the request handler (spec §6).
+    expect(parseRepo(undefined as unknown as string)).toBeNull();
+    expect(parseRepo(null as unknown as string)).toBeNull();
+    expect(parseRepo(42 as unknown as string)).toBeNull();
+    expect(parseRepo({ owner: "facebook", name: "react" } as unknown as string)).toBeNull();
+  });
 });
