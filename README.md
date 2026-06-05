@@ -211,9 +211,9 @@ All five tools share step 2's cached payload. The verdict logic is deterministic
 
 Part of a small slate of agent-focused Apify Actors:
 
-- **Apify Actor Idea Validator** — validates an Actor idea against the Apify Store and returns a GO/REFINE/NO-GO verdict with comparable Actors.
-- **SERP Topic Gap Monitor** — finds topic gaps in search-result coverage and produces scored gap reports.
-- **Docs MCP Server** — an MCP server giving AI assistants queryable access to framework documentation (Next.js, React, Tailwind, TypeScript, Prisma).
+- **[SERP Topic Gap Monitor](https://apify.com/joeslade/serp-topic-gap-monitor)** — finds topic gaps in search-result coverage and produces scored gap reports.
+- **[Changelog Triage Agent](https://apify.com/joeslade/changelog-triage-agent)** — monitors product changelogs across services, classifies each new entry as BREAKING / WARNING / INFO, and delivers a de-duplicated triage report so teams catch deprecations before they bite.
+- **[Docs MCP Server](https://apify.com/joeslade/docs-mcp-server-starter)** — an MCP server giving AI assistants queryable access to framework documentation (Next.js, React, Tailwind, TypeScript, Prisma).
 
 ## FAQ and support
 
