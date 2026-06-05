@@ -18,7 +18,7 @@ The differentiator is **judgment, not raw access**: every verdict ships alongsid
 1. **Start the server** — run this Actor in Standby mode. It boots with no input required.
 2. **Connect your MCP client** to the Standby endpoint (`https://<your-standby-url>/mcp`) using the Streamable HTTP transport.
 3. **Call a tool** — start with `get_repo_health` for the headline verdict, then drill into a dimension (`get_activity_metrics`, `get_issue_health`, `get_pr_health`, `get_contributor_insights`) when you need detail.
-4. **(Optional) Add a GitHub token** to raise the rate limit and analyze private repos — see [Input](#input).
+4. **Add a GitHub token** (effectively required) — the GraphQL API this Actor uses rejects unauthenticated requests, and Apify's shared egress IPs exhaust GitHub's anonymous quota almost immediately. A free read-only token gives you 5,000 req/hour and unlocks private repos. See [Input](#input).
 
 ## The five tools
 
@@ -146,15 +146,15 @@ Verdicts come from **pinned, transparent thresholds** — same repo state + same
 
 ## Input
 
-The server boots with **no input required**. All fields are optional Standby configuration:
+The server boots with **no input required** (a Standby constraint — every field is optional in the schema so the container never crash-loops). In practice, you must provide a GitHub token for the Actor to return verdicts rather than rate-limit errors — see the note below the table.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| `githubToken` | string (secret) | — | Personal access or fine-grained token. Raises the GitHub API rate limit to **5,000 req/hour** and enables **private-repo** analysis. Leave blank to use the lower unauthenticated limit on public repos. |
+| `githubToken` | string (secret) | — | **Effectively required.** Read-only personal access or fine-grained token. GitHub's GraphQL API (this Actor's primary data source) needs authentication, and on Apify's shared IPs the anonymous quota is exhausted almost immediately — without a token the Actor returns rate-limit errors. A token gives **5,000 req/hour** and enables **private-repo** analysis. |
 | `cacheTtlMinutes` | integer | `20` | How long a repo's fetched payload is reused before refetching. Lower = fresher; higher = fewer API calls. |
 | `analysisWindowDays` | integer | `90` | Trailing window over which issue and PR activity is measured. |
 
-> **GitHub token (optional but recommended).** Without a token, GitHub allows only ~60 requests/hour per IP, which is fine for occasional checks but will rate-limit a busy agent. A read-only token lifts this to 5,000/hour and unlocks private repositories you have access to. Paste it into the `githubToken` field; it's stored as a secret.
+> **GitHub token — effectively required.** Although the Actor boots with no input (a Standby requirement), it can't return verdicts without a token. It uses GitHub's **GraphQL API, which rejects unauthenticated requests**, and Apify Standby containers share outbound IPs whose anonymous REST quota (~60 req/hour per IP) is typically already exhausted by other traffic. A **read-only** token — a classic token with *no scopes* is enough for public repos — lifts you to **5,000 req/hour** and unlocks private repositories you can access. Provide it either by pasting into the `githubToken` field or by setting a `GITHUB_TOKEN` environment variable on the Actor (recommended for Standby); both are stored as secrets.
 
 ## Output
 
@@ -177,7 +177,7 @@ Each tool returns a single structured JSON object (shown above). Responses are d
 
 ## Pricing
 
-This Actor runs in Standby mode and is billed for the compute it uses while warm and serving requests. Health reads are lightweight — each repo's GitHub data is fetched once and cached (default 20 minutes) and shared across all five tools, so drilling into multiple dimensions for the same repo costs a single upstream fetch. Using your own GitHub token keeps you clear of GitHub's rate limits at no extra Apify cost.
+This Actor runs in Standby mode and is billed for the compute it uses while warm and serving requests. Health reads are lightweight — each repo's GitHub data is fetched once and cached (default 20 minutes) and shared across all five tools, so drilling into multiple dimensions for the same repo costs a single upstream fetch. A GitHub token (required in practice — see [Input](#input)) is what lets the Actor reach GitHub on the platform's shared IPs, and it adds no extra Apify cost.
 
 ## Tips
 
