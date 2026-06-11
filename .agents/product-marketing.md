@@ -41,7 +41,7 @@
 
 ## Competitive Landscape
 *(Validated via WebSearch 2026-06-11 → full analysis in [[github-repo-intelligence-mcp-positioning-brief]]. Bright Data deep-scrape deferred — CLI unauthenticated this session.)*
-**Direct:** **None found.** No maintainability-verdict MCP server surfaced across Glama (34k+ servers), mcp.so, or PulseMCP. The actor occupies an unoccupied square: MCP-native + agent-callable + multi-dimensional verdict + deterministic + transparent.
+**Direct:** **None found** (confirmed via WebSearch + direct Bright Data registry scrape). No maintainability-verdict MCP server across Glama (34k+ servers), mcp.so, or PulseMCP; nearest MCP neighbor is `mcp-repo-graph` (dependency graph, not a verdict). The actor occupies an unoccupied square: MCP-native + agent-callable + multi-dimensional verdict + deterministic + transparent.
 **Secondary:** `github/github-mcp-server` (official) and other raw GitHub MCP/Octokit wrappers — agent-callable but expose API data, no verdict (leaves the conclusion to guesswork).
 **Indirect (scoring):** gh-repo-health, repo-health-check, repocheck.com, **isitmaintained.com** (closest in spirit: high/fair/borderline read, but web service + Chrome extension, single-dimension issue-close-time, not agent-callable), repostatus.org (self-declared badges).
 **Indirect (security/staleness):** deps.dev, OWASP Dependency-Check, Snyk, Dependabot, depcheck, stale-deps, npm-check — answer "is it vulnerable/unused?", not "is it still maintained?" Wrong surface.
@@ -72,15 +72,14 @@
 **Anxiety:** "Another tool to configure" + the GitHub-token step. Mitigated by Standby (always warm, configurator flow) and the schema's token walkthrough.
 
 ## Customer Language
-*(Harvested via WebSearch 2026-06-11; verbatim forum quotes flagged to deepen w/ Bright Data — see [[github-repo-intelligence-mcp-positioning-brief]] §4.)*
-**How they describe the problem (near-verbatim from DEV/blog titles + snippets):**
-- "is this dependency still maintained, or should I worry?"
-- "npm outdated won't tell you if a package is abandoned" (so devs hand-build tools like stale-deps)
-- "How do you tell if a project is maintained?"
-- "Should the quality of GitHub projects be evaluated by their star count?" (star count = bad proxy)
-- "stale and potentially vulnerable packages silently lurking in codebases"
-- "key man risk" / "one person's side project" (→ bus factor)
-- Nuance: "distinguishing between unmaintained and feature-complete packages is not an easy task" (stable ≠ dead)
+*(Harvested via WebSearch + Bright Data thread scrapes 2026-06-11 → full quotes in [[github-repo-intelligence-mcp-positioning-brief]] §4.)*
+**How they describe the problem (verbatim from real threads):**
+- "few or no recent commits, many long-open issues and pull requests, and nothing is changing" (opensource.stackexchange)
+- "if a github repo hasn't been updated in the past 2 years I tend to consider it abandoned… [but] some projects older than this I'd still happily use" (r/selfhosted — they know last-updated is a blunt proxy but use it anyway)
+- "no updates in 2 years, no answer to issues… the project is actually broken, you can't depend on this tool" (dev.to)
+- "deciding whether a project is well-maintained before opening a PR… only to realize the codebase has deeper issues" (GitHub community #186583)
+- "Open issues aren't an indicator — the issue tracker will often be swamped" (→ validates response-time-not-count in get_issue_health)
+**Near-verbatim (article titles):** "npm outdated won't tell you if a package is abandoned"; "How do you tell if a project is maintained?"; "Should quality be evaluated by star count?" (star count = bad proxy); "key man risk" (→ bus factor); nuance: stable ≠ dead (feature-complete ≠ abandoned).
 **How they describe us:** *(pre-traction — no review corpus yet)*
 **Words to use:** maintained, abandoned, active, dying, verdict, judgment, transparent, deterministic, repo health, dependency health, bus factor, key-man risk, "still maintained?"
 **Words to avoid:** "score" alone (implies black box + collides with the scoring-tool bucket), "vulnerability/CVE" framing (wrong surface = security scanners), bare "AI-powered"
