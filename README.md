@@ -1,4 +1,6 @@
-**GitHub Repo Intelligence** is an MCP server that answers the question "is this GitHub repository still actively maintained?" — returning one of four verdict labels (*Actively maintained*, *Slowing*, *At-risk*, *Likely abandoned*) backed by the transparent, inspectable metrics that produced it. Point it at any `owner/name` (or GitHub URL) and your agent gets a verdict it can act on, plus the raw numbers so it can see exactly why.
+# GitHub Repo Health Check — a maintainability verdict, not another dashboard
+
+**GitHub Repo Health Check** is an MCP server that answers the one question your dependency list can't: **is this repo still maintained, or am I building on sand?** Last-commit date lies. Star count lies. One signal isn't a verdict. So it returns a four-way read — *Actively maintained*, *Slowing*, *At-risk*, or *Likely abandoned* — synthesized across four dimensions (activity, issues, PRs, contributors), backed by the transparent, inspectable thresholds that produced it. Point it at any `owner/name` (or GitHub URL) and your agent gets a verdict it can act on, plus the raw numbers so it can see exactly why. Same repo state + config → the same verdict, every time.
 
 It runs as a [Standby Actor](https://docs.apify.com/platform/actors/development/programming-interface/standby) on the [Apify platform](https://docs.apify.com/platform) — always warm, reachable over the [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#streamable-http) at the `/mcp` path, with API access, scheduling, and monitoring included.
 
@@ -12,7 +14,7 @@ It runs as a [Standby Actor](https://docs.apify.com/platform/actors/development/
 
 If you've ever asked "is this repo abandoned?" or run a GitHub repo health check by hand, this server does it programmatically at any scale.
 
-## Why use GitHub Repo Intelligence?
+## Why use GitHub Repo Health Check?
 
 Most GitHub tools hand an agent raw API access and leave the judgment to the model — inconsistent, hand-rolled heuristics on every call. This server does the synthesis for you.
 
@@ -20,7 +22,7 @@ The differentiator is **judgment, not raw access**: every verdict ships alongsid
 
 One GitHub fetch per repository is cached and shared across all five tools. Drilling from the headline verdict into a specific dimension costs no extra upstream calls.
 
-## How to use GitHub Repo Intelligence
+## How to use GitHub Repo Health Check
 
 1. **Deploy the Actor** — run it in Standby mode on Apify. It boots with no input required.
 2. **Connect your MCP client** to the Standby endpoint (`https://<your-standby-url>/mcp`) using the Streamable HTTP transport.
