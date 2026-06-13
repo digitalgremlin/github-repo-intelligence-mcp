@@ -1,5 +1,5 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.digitalgremlin/github-repo-intelligence-mcp",
   "description": "GitHub repo maintainability verdicts—maintained, slowing, at-risk, abandoned—via MCP.",
   "version": "0.1.0",
