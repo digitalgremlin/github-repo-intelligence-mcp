@@ -236,3 +236,9 @@ Add a GitHub token. See [Input](#input). A classic token with no scopes is free 
 
 **Found a bug or want a feature?**
 Open an issue on the Actor's **Issues** tab. Custom variations are available on request.
+
+## License
+
+Copyright © 2026 Joe Slade.
+
+Licensed under the [GNU Affero General Public License v3.0](LICENSE) (AGPL-3.0). You're free to use, study, modify, and self-host this software; if you run a modified version as a network service, the AGPL requires you to offer your modified source to its users under the same license. For a commercial license not subject to the AGPL's network-copyleft, contact the author.

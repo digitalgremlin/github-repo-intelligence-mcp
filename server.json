@@ -1,0 +1,16 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.github.digitalgremlin/github-repo-intelligence-mcp",
+  "description": "GitHub repo maintainability verdicts—maintained, slowing, at-risk, abandoned—via MCP.",
+  "version": "0.1.0",
+  "repository": {
+    "url": "https://github.com/digitalgremlin/github-repo-intelligence-mcp",
+    "source": "github"
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://joeslade--github-repo-intelligence-mcp.apify.actor/mcp"
+    }
+  ]
+}
