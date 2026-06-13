@@ -2,8 +2,8 @@
 	"$schema": "https://apify.com/schemas/v1/actor.ide.json",
 	"actorSpecification": 1,
 	"name": "github-repo-intelligence-mcp",
-	"title": "GitHub Repo Intelligence MCP",
-	"description": "MCP server that answers 'is this repo still maintained?' — returns one of four verdict labels (Actively maintained, Slowing, At-risk, Likely abandoned) with the transparent metrics behind every call. Runs as a Standby Actor so it's always warm.",
+	"title": "GitHub Repo Health Check—Maintained or Abandoned? (MCP Server)",
+	"description": "Is this dependency still maintained? Get a deterministic, opinionated verdict for any GitHub repo—Actively maintained, Slowing, At-risk, or Likely abandoned—across 5 agent-callable MCP tools.",
 	"version": "0.1",
 	"buildTag": "latest",
 	"usesStandbyMode": true,
@@ -12,7 +12,7 @@
 		"generatedBy": "Claude Code with Claude Opus 4.7"
 	},
 	"input": {
-		"title": "GitHub Repo Intelligence MCP input",
+		"title": "GitHub Repo Health Check (MCP) input",
 		"description": "Optional Standby configuration. All fields are optional so the Actor boots with no input — but a GitHub token is effectively required to get verdicts rather than rate-limit errors.",
 		"type": "object",
 		"schemaVersion": 1,
