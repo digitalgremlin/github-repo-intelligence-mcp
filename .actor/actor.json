@@ -46,6 +46,7 @@
 		},
 		"required": []
 	},
+	"output": "./output_schema.json",
 	"dockerfile": "../Dockerfile",
 	"webServerMcpPath": "/mcp",
 	"categories": ["AI_GPT_AND_LLMS", "DEVELOPER_TOOLS"],

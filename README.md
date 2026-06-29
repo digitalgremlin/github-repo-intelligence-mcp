@@ -1,8 +1,14 @@
-# GitHub Repo Health Check — a maintainability verdict, not another dashboard
+_A maintainability verdict, not another dashboard._
 
 **GitHub Repo Health Check** is an MCP server that answers the one question your dependency list can't: **is this repo still maintained, or am I building on sand?** Last-commit date lies. Star count lies. One signal isn't a verdict. So it returns a four-way read — *Actively maintained*, *Slowing*, *At-risk*, or *Likely abandoned* — synthesized across four dimensions (activity, issues, PRs, contributors), backed by the transparent, inspectable thresholds that produced it. Point it at any `owner/name` (or GitHub URL) and your agent gets a verdict it can act on, plus the raw numbers so it can see exactly why. Same repo state + config → the same verdict, every time.
 
 It runs as a [Standby Actor](https://docs.apify.com/platform/actors/development/programming-interface/standby) on the [Apify platform](https://docs.apify.com/platform) — always warm, reachable over the [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#streamable-http) at the `/mcp` path, with API access, scheduling, and monitoring included.
+
+## See it in action
+
+Two repos, two very different verdicts — then a drill-down into the metrics behind them, all over MCP:
+
+![GitHub Repo Health Check terminal demo](https://raw.githubusercontent.com/digitalgremlin/github-repo-intelligence-mcp/main/.demo/github-repo-intelligence-mcp-demo.gif)
 
 ## Who is this for?
 
