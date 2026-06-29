@@ -8,7 +8,7 @@ It runs as a [Standby Actor](https://docs.apify.com/platform/actors/development/
 
 Two repos, two very different verdicts — then a drill-down into the metrics behind them, all over MCP:
 
-![GitHub Repo Health Check terminal demo](https://raw.githubusercontent.com/digitalgremlin/github-repo-intelligence-mcp/main/.demo/github-repo-intelligence-mcp-demo.gif)
+![GitHub Repo Health Check terminal demo](https://raw.githubusercontent.com/digitalgremlin/digitalgremlin/main/apify-actor-demos/github-repo-intelligence-mcp-demo.gif)
 
 ## Who is this for?
 
